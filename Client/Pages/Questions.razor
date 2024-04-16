@@ -1,0 +1,52 @@
+﻿@page "/questions/{gameid:int}"
+@using ToiToiToi.Shared
+@inject HttpClient Http
+
+<PageTitle>Team of Influencers</PageTitle>
+
+<h1>Team of Influencers</h1>
+<p>Joined game: @GameId</p>
+<p>Answer each question with a score between 1 and 5</p>
+
+@if (questions == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    @for (int index = 0; index < questions.Length; index++)
+    {
+        <div>
+            <span>@questions[index].Description</span>
+            <InputRadioGroup Name="@questions[index].Id.ToString()" @bind-Value="answers[index]">
+                @for(int number = 1; number < 6; number++)
+                {
+                    <InputRadio Name="@questions[index].Id.ToString()" Value="number" />
+                    @number
+                }
+            </InputRadioGroup>
+        </div>
+    }
+    <button>Versturen</button>
+}
+
+@code {
+    [Parameter]
+    public int? GameId { get; set; }
+
+    private Question[] questions = new Question[] { };
+    private int[] answers = new int[] { };
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            questions = await Http.GetFromJsonAsync<Question[]>("/api/Questions") ?? new Question[] { };
+            answers = new int[questions.Length];
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.ToString());
+        }
+    }
+}

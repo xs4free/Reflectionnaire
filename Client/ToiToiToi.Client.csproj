@@ -4,7 +4,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-	<RootNamespace>BlazorApp.Client</RootNamespace>
+	<RootNamespace>ToiToiToi.Client</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -14,7 +14,7 @@
 
 
   <ItemGroup>
-	<ProjectReference Include="..\Shared\Shared.csproj" />
+	<ProjectReference Include="..\Shared\ToiToiToi.Shared.csproj" />
   </ItemGroup>
 
 </Project>
