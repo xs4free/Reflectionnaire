@@ -8,41 +8,49 @@
 <p>Joined game: @GameId</p>
 <p>Answer each question with a score between 1 and 5</p>
 
-@if (questions == null)
+@if (_questions == null || _answers == null)
 {
     <p><em>Loading...</em></p>
 }
 else
 {
-    @for (int index = 0; index < questions.Length; index++)
-    {
-        <div>
-            <span>@questions[index].Description</span>
-            <InputRadioGroup Name="@questions[index].Id.ToString()" @bind-Value="answers[index]">
-                @for(int number = 1; number < 6; number++)
-                {
-                    <InputRadio Name="@questions[index].Id.ToString()" Value="number" />
-                    @number
-                }
-            </InputRadioGroup>
-        </div>
-    }
-    <button>Versturen</button>
+    <EditorForm>
+        @for (var index = 0; index < _questions.Length; index++)
+        {
+            var localIndex = index;
+            <div>
+                <span>@_questions[index].Description</span>
+                <InputRadioGroup TValue="int" Name="@index.ToString()" @bind-Value="@_answers[localIndex]">
+                    @for(var number = 1; number <= 5; number++)
+                    {
+                        <InputRadio Value="number" />
+                        @number
+                    }
+                </InputRadioGroup>
+            </div>
+        }
+        <button>Versturen</button>
+    </EditorForm>
 }
 
 @code {
     [Parameter]
     public int? GameId { get; set; }
 
-    private Question[] questions = new Question[] { };
-    private int[] answers = new int[] { };
+    private Question[]? _questions;
+    private int[]? _answers;
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
-            questions = await Http.GetFromJsonAsync<Question[]>("/api/Questions") ?? new Question[] { };
-            answers = new int[questions.Length];
+            _questions = await Http.GetFromJsonAsync<Question[]>("/api/Questions") ?? [];
+            _answers = new int[_questions.Length];
+            
+            for(int index = 0; index < _answers.Length; index++)
+            {
+                _answers[index] = 3;
+            }
         }
         catch (Exception ex)
         {

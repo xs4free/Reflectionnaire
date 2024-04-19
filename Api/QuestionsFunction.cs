@@ -24,7 +24,7 @@ namespace Reflectionnaire.Api
             {
                 Id = randomNumber.Next(),
                 Description = $"Question {index}?",
-                QuestionType = (QuestionType)randomNumber.Next(0, (int)QuestionType.Execution)
+                Category = (Category)randomNumber.Next(0, (int)Category.Execution)
             }).ToArray();
 
             var response = req.CreateResponse(HttpStatusCode.OK);
