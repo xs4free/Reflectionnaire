@@ -1,4 +1,5 @@
 ﻿@page "/questions/{gameid:int}"
+@using Reflectionnaire.Client.Modal
 @using Reflectionnaire.Shared
 @inject HttpClient Http
 
@@ -8,53 +9,68 @@
 <p>Joined game: @GameId</p>
 <p>Answer each question with a score between 1 and 5</p>
 
-@if (_questions == null || _answers == null)
+@if (_answers == null)
 {
     <p><em>Loading...</em></p>
 }
 else
 {
     <EditorForm>
-        @for (var index = 0; index < _questions.Length; index++)
+        @foreach(var answer in _answers)
         {
-            var localIndex = index;
             <div>
-                <span>@_questions[index].Description</span>
-                <InputRadioGroup TValue="int" Name="@index.ToString()" @bind-Value="@_answers[localIndex]">
-                    @for(var number = 1; number <= 5; number++)
+                <span>@answer.Question.Description</span>
+                <InputRadioGroup TValue="int" Name="@answer.Question.Id.ToString()" @bind-Value="@answer.Score">
+                    @for (var number = 1; number <= 5; number++)
                     {
-                        <InputRadio Value="number" />
+                        <InputRadio Value="number"/>
                         @number
                     }
                 </InputRadioGroup>
             </div>
         }
-        <button>Versturen</button>
+        <button @onclick="OnSentClicked">Versturen</button>
     </EditorForm>
+}
+
+@if (_scores != null)
+{
+    <div>
+    @foreach (var score in _scores)
+    {
+        <div>
+            <span>@score.Category: @score.TotalScore</span>
+        </div>
+    }
+    </div>
 }
 
 @code {
     [Parameter]
     public int? GameId { get; set; }
 
-    private Question[]? _questions;
-    private int[]? _answers;
+    private Answer[]? _answers;
+
+    private CategoryTotal[]? _scores;
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
-            _questions = await Http.GetFromJsonAsync<Question[]>("/api/Questions") ?? [];
-            _answers = new int[_questions.Length];
-            
-            for(int index = 0; index < _answers.Length; index++)
-            {
-                _answers[index] = 3;
-            }
+            var questions = await Http.GetFromJsonAsync<Question[]>("/api/Questions") ?? [];
+            _answers = questions.Select(question => new Answer() { Question = question, Score = 3 }).ToArray();
         }
         catch (Exception ex)
         {
             Console.WriteLine(ex.ToString());
         }
     }
+
+    private void OnSentClicked(MouseEventArgs obj)
+    {
+        _scores = _answers?.GroupBy(answer => answer.Question.Category)
+            .Select(group => new CategoryTotal { TotalScore = group.Sum(g => g.Score), Category = group.Key})
+            .ToArray();
+    }
+
 }
