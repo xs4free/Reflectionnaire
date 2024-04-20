@@ -1,7 +1,4 @@
 ﻿@page "/questions/{gameid:int}"
-@using Reflectionnaire.Client.Modal
-@using Reflectionnaire.Shared
-@inject HttpClient Http
 
 <PageTitle>Team of Influencers</PageTitle>
 
@@ -45,32 +42,4 @@ else
     </div>
 }
 
-@code {
-    [Parameter]
-    public int? GameId { get; set; }
-
-    private Answer[]? _answers;
-
-    private CategoryTotal[]? _scores;
-
-    protected override async Task OnInitializedAsync()
-    {
-        try
-        {
-            var questions = await Http.GetFromJsonAsync<Question[]>("/api/Questions") ?? [];
-            _answers = questions.Select(question => new Answer() { Question = question, Score = 3 }).ToArray();
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex.ToString());
-        }
-    }
-
-    private void OnSentClicked(MouseEventArgs obj)
-    {
-        _scores = _answers?.GroupBy(answer => answer.Question.Category)
-            .Select(group => new CategoryTotal { TotalScore = group.Sum(g => g.Score), Category = group.Key})
-            .ToArray();
-    }
-
-}
+<Radarchart ScoreCategory1="_score1" ScoreCategory2="_score2" ScoreCategory3="_score3" ScoreCategory4="_score4" />
