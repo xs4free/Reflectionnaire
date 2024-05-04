@@ -2,10 +2,10 @@
 {
     public enum Category
     {
-        Dummy,
-        Things,
-        People,
-        Place,
-        Execution
+        Dummy = 5,
+        Things = 1,
+        People = 2,
+        Place = 3,
+        Execution = 4
     }
 }
