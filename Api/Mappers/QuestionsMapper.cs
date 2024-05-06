@@ -1,4 +1,4 @@
-﻿using Reflectionnaire.Api.DataAccess;
+﻿using Reflectionnaire.Api.DataAccess.Entities;
 using Reflectionnaire.Shared;
 using Riok.Mapperly.Abstractions;
 

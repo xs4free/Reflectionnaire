@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Functions.Worker;
 using Reflectionnaire.Api.DataAccess;
+using Reflectionnaire.Api.DataAccess.Entities;
 using Reflectionnaire.Api.Mappers;
 using Reflectionnaire.Shared;
 

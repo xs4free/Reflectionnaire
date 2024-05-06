@@ -3,6 +3,7 @@
     public enum TableNames
     {
         Reflectionnaires,
-        Questions
+        Questions,
+        Answers
     }
 }

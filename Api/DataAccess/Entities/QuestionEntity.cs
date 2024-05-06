@@ -1,4 +1,4 @@
-﻿namespace Reflectionnaire.Api.DataAccess
+﻿namespace Reflectionnaire.Api.DataAccess.Entities
 {
     internal class QuestionEntity : TableEntityBase
     {

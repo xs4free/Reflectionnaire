@@ -15,6 +15,10 @@ namespace Reflectionnaire.Api.DataAccess
             return _tableClient.Query<T>(filter, maxPerPage, select, cancellationToken);
         }
 
+        public async Task<Response> AddEntityAsync<T>(T entity, CancellationToken cancellationToken = default) where T : ITableEntity
+        {
+            return await _tableClient.AddEntityAsync<T>(entity, cancellationToken);
+        }
     }
 
     public interface ITableClient
@@ -24,5 +28,7 @@ namespace Reflectionnaire.Api.DataAccess
             int? maxPerPage = null,
             IEnumerable<string>? select = null,
             CancellationToken cancellationToken = default) where T : class, ITableEntity;
+
+        Task<Response> AddEntityAsync<T>(T entity, CancellationToken cancellationToken = default) where T : ITableEntity;
     }
 }
