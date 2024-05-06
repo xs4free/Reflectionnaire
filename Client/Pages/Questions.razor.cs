@@ -8,10 +8,10 @@ namespace Reflectionnaire.Client.Pages;
 
 public partial class Questions
 {
-    [Inject] private HttpClient Http { get; set; }
+    [Inject] private HttpClient ReflectionnaireService { get; set; }
     [Parameter] public int? GameId { get; set; }
     
-    private Answer[]? _answers;
+    private IEnumerable<Answer> _answers = [];
     private CategoryTotal[]? _scores;
 
     private int _score1 = 0;
@@ -23,8 +23,11 @@ public partial class Questions
     {
         try
         {
-            var questions = await Http.GetFromJsonAsync<Question[]>("/api/Questions") ?? [];
-            _answers = questions.Select(question => new Answer() { Question = question, Score = 3 }).ToArray();
+            string reflectionnaireId = Uri.EscapeDataString("121331d6-8c01-4dfc-b5fe-1776b1184baa");
+            string url = $"/api/Questions?reflectionnaireId={reflectionnaireId}";
+
+            var questions = await ReflectionnaireService.GetFromJsonAsync<Question[]>(url) ?? [];
+            _answers = questions.Select(question => new Answer() { Question = question, Score = 3 }).ToList();
         }
         catch (Exception ex)
         {
@@ -32,10 +35,33 @@ public partial class Questions
         }
     }
 
-    private void OnSentClicked(MouseEventArgs obj)
+    private async Task OnSentClicked(MouseEventArgs obj)
     {
-        _scores = _answers?.GroupBy(answer => answer.Question.Category)
-            .Select(group => new CategoryTotal { TotalScore = group.Sum(g => g.Score), Category = group.Key })
+        await SentAnswersAsync();
+        UpdateRadarChart();
+    }
+
+    private async Task SentAnswersAsync()
+    {
+        string reflectionnaireId = Uri.EscapeDataString("121331d6-8c01-4dfc-b5fe-1776b1184baa");
+        string url = $"/api/Answers";
+
+        var answers = new ReflectionnaireAnswers
+        {
+            ReflectionnaireId = reflectionnaireId,
+            UserId = Guid.NewGuid(),
+            QuestionAnswers = _answers.Select(answer => new QuestionAnswer { QuestionId = answer.Question.Id, Score = answer.Score }).ToList(),
+        };
+
+        await ReflectionnaireService.PostAsJsonAsync(url, answers);
+    }
+
+    private void UpdateRadarChart()
+    {
+        _scores = _answers
+            .Where(answer => answer.Question != null)
+            .GroupBy(answer => answer.Question?.Category)
+            .Select(group => new CategoryTotal { TotalScore = group.Sum(g => g.Score), Category = group.Key.Value })
             .ToArray();
 
         _score1 = _scores.First(s => s.Category == Category.Execution).TotalScore;

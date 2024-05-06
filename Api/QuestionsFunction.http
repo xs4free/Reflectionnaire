@@ -1,0 +1,23 @@
+GET http://localhost:7071/api/Questions?reflectionnaireId=121331d6-8c01-4dfc-b5fe-1776b1184baa
+
+###
+POST http://localhost:7071/api/Answers
+Content-Type: application/json
+
+{
+    "ReflectionnaireId": "121331d6-8c01-4dfc-b5fe-1776b1184baa",
+    "UserId": "121331d6-8c01-4dfc-b5fe-1776b1184bcd",
+    "QuestionAnswers": 
+    [
+      {
+        "QuestionId": 1,
+        "Score": 1
+      },
+      {
+        "QuestionId": 2,
+        "Score": 2
+      }
+    ]
+}
+
+###
