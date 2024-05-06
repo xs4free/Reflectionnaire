@@ -63,8 +63,3 @@ Once you clone the project, open the solution in the latest release of [Visual S
 ## Deploy to Azure Static Web Apps
 
 This application can be deployed to [Azure Static Web Apps](https://docs.microsoft.com/azure/static-web-apps), to learn how, check out [our quickstart guide](https://aka.ms/blazor-swa/quickstart).
-
-
-# Azurite
-Used these step to generate a certificate for local-development:
-https://github.com/Azure/Azurite/blob/main/README.md#https-setup

@@ -1,53 +1,28 @@
-using System.Net;
-using Azure;
-using Azure.Data.Tables;
-using Azure.Identity;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Functions.Worker;
-using Microsoft.Azure.Functions.Worker.Http;
-using Microsoft.Extensions.Logging;
 using Reflectionnaire.Api.DataAccess;
+using Reflectionnaire.Api.Mappers;
 using Reflectionnaire.Shared;
 
 namespace Reflectionnaire.Api
 {
-    public class QuestionsFunction
+    public class QuestionsFunction(ITableClientFactory _factory)
     {
-        private readonly ILogger<QuestionsFunction> _logger;
-        private readonly TableClient _tableClient;
-
-        public QuestionsFunction(ILogger<QuestionsFunction> logger)
-        {
-            _logger = logger;
-
-            var tableStorageEndpoint = Environment.GetEnvironmentVariable("TableStorageEndpointUri", EnvironmentVariableTarget.Process);
-            _tableClient = new TableClient(
-                new Uri(tableStorageEndpoint),
-                "Questions",
-                new DefaultAzureCredential());
-        }
-
         [Function("Questions")]
-        public async Task<HttpResponseData> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get")] HttpRequestData req)
+        public async Task<IEnumerable<Question>> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get")] HttpRequest request, [FromQuery] string reflectionnaireId)
         {
-            // var randomNumber = new Random();
-            //
-            // var result = Enumerable.Range(1, 16).Select(index => new Question
-            // {
-            //     Id = randomNumber.Next(),
-            //     Description = $"Question {index}?",
-            //     Category = index < 3 ? Category.Dummy : index < 6 ? Category.Things : index < 9 ? Category.People : index < 12 ? Category.Place : Category.Execution
-            // }).ToArray();
+            var reflectionnaireClient = await _factory.CreateAsync(TableNames.Reflectionnaires);
+            var reflectionnaire = reflectionnaireClient.Query<ReflectionnaireEntity>(e => e.PartitionKey == reflectionnaireId && e.RowKey == reflectionnaireId).FirstOrDefault();
+            if (reflectionnaire == null)
+            {
+                return [];
+            }
 
-            // Create the table if it doesn't already exist to verify we've successfully authenticated.
-            await _tableClient.CreateIfNotExistsAsync();
-
-            var questions = _tableClient.QueryAsync<QuestionEntity>(ent => ent.PartitionKey == "VR-Binding");
-
-            var response = req.CreateResponse(HttpStatusCode.OK);
+            var questionsClient = await _factory.CreateAsync(TableNames.Questions);
+            var entities = questionsClient.Query<QuestionEntity>(e => e.PartitionKey == reflectionnaire.ReflectionnaireTypeId).ToList();
             
-            await response.WriteAsJsonAsync(questions.GetAsyncEnumerator());
-
-            return response;
+            return entities.Select(QuestionsMapper.QuestionEntityToQuestionNL).ToList();
         }
     }
 }
