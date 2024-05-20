@@ -1,45 +1,40 @@
 ﻿@page "/questions/{gameid:int}"
+@layout UserLayout
+@rendermode RenderMode.InteractiveWebAssembly
 
 <PageTitle>Team of Influencers</PageTitle>
 
-<h1>Team of Influencers</h1>
-<p>Joined game: @GameId</p>
-<p>Answer each question with a score between 1 and 5</p>
+<RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.Center" Gap="100px">
+    <h1>Team of Influencers</h1>
+
+    <RadzenCard class="p-1 rz-background-color-secondary-lighter rz-text-align-center rz-m-12">
+        <RadzenText TextStyle="TextStyle.Body1">Beantwoordt elke vraag met een score tussen de 1 en 5 sterren</RadzenText>
+    </RadzenCard>
+</RadzenStack>
 
 @if (_answers == null)
 {
     <p><em>Loading...</em></p>
 }
-else
+else if (_scores == null)
 {
-    <EditorForm>
-        @foreach(var answer in _answers)
+    <RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.Center" Gap="100px">
+        @foreach (var answer in _answers)
         {
-            <div>
-                <span>@answer.Question.Description</span>
-                <InputRadioGroup TValue="int" Name="@answer.Question.Id.ToString()" @bind-Value="@answer.Score">
-                    @for (var number = 1; number <= 5; number++)
-                    {
-                        <InputRadio Value="number"/>
-                        @number
-                    }
-                </InputRadioGroup>
-            </div>
+            <RadzenCard class="p-1 rz-background-color-primary-lighter rz-text-align-center rz-m-12">
+                <a id=@answer.Question?.Id />
+                <RadzenText TextStyle="TextStyle.Body1">@answer.Question?.Description</RadzenText>
+                <RadzenRating @bind-Value=@answer.Score Stars="5" />
+            </RadzenCard>
         }
-        <button @onclick="OnSentClicked">Versturen</button>
-    </EditorForm>
-}
 
-@if (_scores != null)
+        <RadzenCard class="p-1 rz-background-color-secondary-lighter rz-text-align-center rz-m-12">
+            <RadzenText TextStyle="TextStyle.Body1">Verstuur jouw antwoorden</RadzenText>
+            <button @onclick="OnSentClicked">Versturen</button>
+        </RadzenCard>
+    </RadzenStack>
+}
+else if (_scores != null)
 {
-    <div>
-    @foreach (var score in _scores)
-    {
-        <div>
-            <span>@score.Category: @score.TotalScore</span>
-        </div>
-    }
-    </div>
+    <Radarchart ScoreCategory1="_score1" ScoreCategory2="_score2" ScoreCategory3="_score3" ScoreCategory4="_score4" />
 }
-
-<Radarchart ScoreCategory1="_score1" ScoreCategory2="_score2" ScoreCategory3="_score3" ScoreCategory4="_score4" />

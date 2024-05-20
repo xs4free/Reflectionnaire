@@ -1,6 +1,7 @@
 ﻿using System.Net.Http.Json;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using Microsoft.JSInterop;
 using Reflectionnaire.Client.Modal;
 using Reflectionnaire.Shared;
 
@@ -9,9 +10,10 @@ namespace Reflectionnaire.Client.Pages;
 public partial class Questions
 {
     [Inject] private HttpClient ReflectionnaireService { get; set; }
+    [Inject] IJSRuntime JSRuntime { get; set; }
     [Parameter] public int? GameId { get; set; }
     
-    private IEnumerable<Answer> _answers = [];
+    private List<Answer> _answers = [];
     private CategoryTotal[]? _scores;
 
     private int _score1 = 0;
@@ -28,11 +30,30 @@ public partial class Questions
 
             var questions = await ReflectionnaireService.GetFromJsonAsync<Question[]>(url) ?? [];
             _answers = questions.Select(question => new Answer() { Question = question, Score = 3 }).ToList();
+
+            foreach(var answer in _answers)
+            {
+                answer.PropertyChanged += Answer_PropertyChanged;
+            }
         }
         catch (Exception ex)
         {
             Console.WriteLine(ex.ToString());
         }
+    }
+
+    private void Answer_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+        if (sender is not Answer answer)
+            return;
+
+        var index = _answers.IndexOf(answer);
+        if (index + 1 > _answers.Count - 1)
+            return;
+        
+        var nextAnswer = _answers[index+1];
+
+        JSRuntime.InvokeVoidAsync("Reflectionnaire.scrollToAnswer", nextAnswer.Question?.Id);
     }
 
     private async Task OnSentClicked(MouseEventArgs obj)

@@ -7,8 +7,8 @@ public partial class Radarchart : ComponentBase
 {
     private bool _imageLoaded;
     private BlazorCanvas Canvas { get; set; }
-    [Parameter] public float Width { get; set; } = 800;
-    [Parameter] public float Height { get; set; } = 800;
+    [Parameter] public float Width { get; set; } = 325;
+    [Parameter] public float Height { get; set; } = 325;
     [Parameter] public int ScoreCategory1 { get; set; }
     [Parameter] public int ScoreCategory2 { get; set; }
     [Parameter] public int ScoreCategory3 { get; set; }
