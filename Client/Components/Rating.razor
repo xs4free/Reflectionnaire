@@ -1,0 +1,16 @@
+﻿﻿@using System.Linq
+@using Microsoft.AspNetCore.Components.Forms
+@inherits FormComponent<int>
+@if (Visible)
+{
+    <div @ref="@Element" style=@Style @attributes="Attributes" class="@GetCssClass()" id="@GetId()">
+        @foreach (var index in Enumerable.Range(1, Stars))
+        {
+            <a id="@(GetId() + index.ToString() + "r")" aria-label="@RateAriaLabel" @onclick="@(args => SetValue(index))" @onclick:preventDefault="true"
+               tabindex="@(Disabled ? "-1" : $"{TabIndex}")"
+               @onkeypress="@(args => OnKeyPress(args, SetValue(index)))" @onkeypress:preventDefault=preventKeyPress @onkeypress:stopPropagation>
+                <span class="rz-rating-icon rzi @(index <= Value ? "rzi-star": "rzi-star-o")"></span>
+            </a>
+        }
+    </div>
+}

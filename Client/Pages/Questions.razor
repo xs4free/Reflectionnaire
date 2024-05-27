@@ -2,14 +2,11 @@
 @layout UserLayout
 @rendermode RenderMode.InteractiveWebAssembly
 
-<PageTitle>Team of Influencers</PageTitle>
+<PageTitle>Reflectionnaire</PageTitle>
 
 <RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.Center" Gap="100px">
-    <h1>Team of Influencers</h1>
-
-    <RadzenCard class="p-1 rz-background-color-secondary-lighter rz-text-align-center rz-m-12">
-        <RadzenText TextStyle="TextStyle.Body1">Beantwoordt elke vraag met een score tussen de 1 en 5 sterren</RadzenText>
-    </RadzenCard>
+    <h1>Reflectionnaire</h1>
+    <h2>TODO: reflectionnaire name tonen</h2>
 </RadzenStack>
 
 @if (_answers == null)
@@ -18,13 +15,17 @@
 }
 else if (_scores == null)
 {
-    <RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.Center" Gap="100px">
+    <RadzenCard class="p-1 rz-background-color-secondary-lighter rz-text-align-center rz-m-12">
+        <RadzenText TextStyle="TextStyle.Body1">Beantwoordt elke vraag met een score tussen de 1 en 5 sterren</RadzenText>
+    </RadzenCard>
+
+    <RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.Center" Gap="1000px">
         @foreach (var answer in _answers)
         {
             <RadzenCard class="p-1 rz-background-color-primary-lighter rz-text-align-center rz-m-12">
                 <a id=@answer.Question?.Id />
                 <RadzenText TextStyle="TextStyle.Body1">@answer.Question?.Description</RadzenText>
-                <RadzenRating @bind-Value=@answer.Score Stars="5" />
+                <Rating @bind-Value=@answer.Score Stars="5" />
             </RadzenCard>
         }
 
@@ -36,5 +37,11 @@ else if (_scores == null)
 }
 else if (_scores != null)
 {
-    <Radarchart ScoreCategory1="_score1" ScoreCategory2="_score2" ScoreCategory3="_score3" ScoreCategory4="_score4" />
+    <RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.Center">
+        <RadzenCard class="p-1 rz-background-color-secondary-lighter rz-text-align-center rz-m-12">
+            <RadzenText TextStyle="TextStyle.Body1">Jouw persoonlijke score</RadzenText>
+        </RadzenCard>
+
+        <Radarchart ScoreCategory1="_score1" ScoreCategory2="_score2" ScoreCategory3="_score3" ScoreCategory4="_score4" />
+    </RadzenStack>
 }
