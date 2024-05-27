@@ -6,7 +6,8 @@
 
 <RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.Center" Gap="100px">
     <h1>Reflectionnaire</h1>
-    <h2>TODO: reflectionnaire name tonen</h2>
+    <h2>@_reflectionnaire?.Description</h2>
+    <h3>@_reflectionnaire?.Name</h3>
 </RadzenStack>
 
 @if (_answers == null)

@@ -8,22 +8,25 @@ using Reflectionnaire.Shared;
 
 namespace Reflectionnaire.Api
 {
-    public class QuestionsFunction(ITableClientFactory _factory)
+    public class ReflectionnairesFunction(ITableClientFactory _factory)
     {
-        [Function("Questions")]
-        public async Task<IEnumerable<Question>> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get")] HttpRequest request, [FromQuery] string reflectionnaireId)
+        [Function("Reflectionnaires")]
+        public async Task<ReflectionnaireData?> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get")] HttpRequest request, [FromQuery] string reflectionnaireId)
         {
             var reflectionnaireClient = await _factory.CreateAsync(TableNames.Reflectionnaires);
             var reflectionnaire = reflectionnaireClient.Query<ReflectionnaireEntity>(e => e.PartitionKey == reflectionnaireId && e.RowKey == reflectionnaireId).FirstOrDefault();
             if (reflectionnaire == null)
             {
-                return [];
+                return null;
             }
 
             var questionsClient = await _factory.CreateAsync(TableNames.Questions);
             var entities = questionsClient.Query<QuestionEntity>(e => e.PartitionKey == reflectionnaire.ReflectionnaireTypeId).ToList();
             
-            return entities.Select(QuestionsMapper.QuestionEntityToQuestionNL).ToList();
+            var result = ReflectionnaireMapper.ReflectionnaireEntityToReflectionnaire(reflectionnaire);
+            result.Questions = entities.Select(QuestionsMapper.QuestionEntityToQuestionNL).ToList();
+
+            return result;
         }
     }
 }

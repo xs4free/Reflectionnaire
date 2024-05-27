@@ -15,6 +15,7 @@ public partial class Questions
     
     private List<Answer> _answers = [];
     private CategoryTotal[]? _scores;
+    private ReflectionnaireData? _reflectionnaire;
 
     private int _score1 = 0;
     private int _score2 = 0;
@@ -26,10 +27,15 @@ public partial class Questions
         try
         {
             string reflectionnaireId = Uri.EscapeDataString("121331d6-8c01-4dfc-b5fe-1776b1184baa");
-            string url = $"/api/Questions?reflectionnaireId={reflectionnaireId}";
+            string url = $"/api/Reflectionnaires?reflectionnaireId={reflectionnaireId}";
 
-            var questions = await ReflectionnaireService.GetFromJsonAsync<Question[]>(url) ?? [];
-            _answers = questions.Select(question => new Answer() { Question = question, Score = 3 }).ToList();
+            _reflectionnaire = await ReflectionnaireService.GetFromJsonAsync<ReflectionnaireData>(url);
+            if (_reflectionnaire == null)
+            {
+                return;
+            }    
+
+            _answers = _reflectionnaire.Questions.Select(question => new Answer() { Question = question, Score = 0 }).ToList();
 
             foreach(var answer in _answers)
             {
