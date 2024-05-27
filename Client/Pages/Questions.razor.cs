@@ -51,11 +51,16 @@ public partial class Questions
     private void Answer_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
         if (sender is not Answer answer)
+        {
             return;
+        }
 
         var index = _answers.IndexOf(answer);
         if (index + 1 > _answers.Count - 1)
+        {
+            JSRuntime.InvokeVoidAsync("Reflectionnaire.scrollToAnswer", "sentBlock");
             return;
+        }
         
         var nextAnswer = _answers[index+1];
 
