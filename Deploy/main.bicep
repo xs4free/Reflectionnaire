@@ -99,7 +99,6 @@ resource functionApp 'Microsoft.Web/sites@2021-03-01' = {
           value: 'dotnet'
         }
       ]
-      ftpsState: 'Disabled'
       minTlsVersion: '1.2'
     }
     httpsOnly: true
