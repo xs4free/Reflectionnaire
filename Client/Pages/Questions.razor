@@ -5,7 +5,6 @@
 <PageTitle>Reflectionnaire</PageTitle>
 
 <RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.Center" Gap="100px">
-    <h1>Reflectionnaire</h1>
     <h2>@_reflectionnaire?.Description</h2>
     <h3>@_reflectionnaire?.Name</h3>
 </RadzenStack>
@@ -23,10 +22,10 @@ else if (_scores == null)
     <RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.Center" Gap="1000px">
         @foreach (var answer in _answers)
         {
-            <RadzenCard class="p-1 rz-background-color-primary-lighter rz-text-align-center rz-m-12">
-                <RadzenText TextStyle="TextStyle.Body1">@answer.Question?.Description</RadzenText>
+            <RadzenCard class="p-1 rz-background-color-primary-light rz-text-align-center rz-m-12">
+                <RadzenText TextStyle="TextStyle.H4" class="rz-color-on-primary-light"><strong>@answer.Question?.Description</strong></RadzenText>
                 <a id=@answer.Question?.Id />
-                <Rating @bind-Value=@answer.Score Stars="5" />
+                <Rating @bind-Value=@answer.Score Stars="5" Style="TextStyle.H4" />
             </RadzenCard>
         }
 

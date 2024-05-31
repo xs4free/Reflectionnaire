@@ -18,4 +18,11 @@
 	<ProjectReference Include="..\Shared\Reflectionnaire.Shared.csproj" />
   </ItemGroup>
 
+
+  <ItemGroup>
+    <Content Update="wwwroot\logo.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>
