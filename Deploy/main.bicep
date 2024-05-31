@@ -2,12 +2,12 @@
 
 param location string = resourceGroup().location
 
-resource webApplication 'Microsoft.Web/staticSites@2020-12-01' = {
+resource webApplication 'Microsoft.Web/staticSites@2022-09-01' = {
   name: 'ss-site-reflectionnaire'
   location: location
+  properties: {}
   sku: {
-    tier: 'Free'
-    name: 'F1'
+    name: 'Free'
   }
   kind: 'linux'
 }
