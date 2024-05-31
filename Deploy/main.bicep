@@ -2,17 +2,22 @@
 
 param location string = resourceGroup().location
 
-resource appServicePlan 'Microsoft.Web/serverfarms@2020-12-01' = {
-  name: 'asp-website-reflectionnaire'
+resource webApplication 'Microsoft.Web/staticSites@2020-12-01' = {
+  name: 'ss-site-reflectionnaire'
   location: location
-  properties: {
-    reserved: true
-  }
   sku: {
     tier: 'Free'
     name: 'F1'
   }
   kind: 'linux'
+}
+
+resource webApplication_appsettings 'Microsoft.Web/staticSites/config@2021-01-15' = {
+  parent: webApplication
+  name: 'appsettings'
+  properties: {
+    test: 'test'
+  }
 }
 
 resource storageaccount 'Microsoft.Storage/storageAccounts@2021-02-01' = {
