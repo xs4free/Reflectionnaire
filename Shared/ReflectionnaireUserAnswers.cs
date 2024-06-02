@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Reflectionnaire.Shared
+﻿namespace Reflectionnaire.Shared
 {
-    public class ReflectionnaireAnswers
+    public class ReflectionnaireUserAnswers
     {
         public string ReflectionnaireId { get; set; }
         public Guid UserId { get; set; }

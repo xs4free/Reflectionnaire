@@ -11,10 +11,10 @@ namespace Reflectionnaire.Api
 {
     public class AnswersFunction(ITableClientFactory _factory)
     {
-        [Function("Answers")]
+        [Function("UserAnswers")]
         public async Task<HttpResponseData> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post")] HttpRequestData request, 
-            [FromBody] ReflectionnaireAnswers answers)
+            [Microsoft.Azure.Functions.Worker.Http.FromBody] ReflectionnaireUserAnswers answers)
         {
             var reflectionnaireClient = await _factory.CreateAsync(TableNames.Reflectionnaires);
             var reflectionnaire = reflectionnaireClient.Query<ReflectionnaireEntity>(
@@ -26,7 +26,7 @@ namespace Reflectionnaire.Api
             }
 
             var questionsClient = await _factory.CreateAsync(TableNames.Answers);
-            var entity = AnswersMapper.ReflectionnaireAnswersToAnswersEntity(answers);
+            var entity = AnswersMapper.ReflectionnaireUserAnswersToAnswersEntity(answers);
             await questionsClient.AddEntityAsync(entity);
 
             return request.CreateResponse(HttpStatusCode.OK);

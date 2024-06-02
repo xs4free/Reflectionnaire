@@ -100,9 +100,9 @@ public partial class Questions
             return;
         }
 
-        string url = $"/api/Answers";
+        string url = $"/api/UserAnswers";
 
-        var answers = new ReflectionnaireAnswers
+        var answers = new ReflectionnaireUserAnswers
         {
             ReflectionnaireId = ReflectionnaireId.Value.ToString("D"),
             UserId = Guid.NewGuid(),
