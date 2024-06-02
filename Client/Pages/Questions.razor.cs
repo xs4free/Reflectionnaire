@@ -20,10 +20,10 @@ public partial class Questions
     private CategoryTotal[]? _scores;
     private ReflectionnaireData? _reflectionnaire;
 
-    private int _score1 = 0;
-    private int _score2 = 0;
-    private int _score3 = 0;
-    private int _score4 = 0;
+    private float _score1 = 0;
+    private float _score2 = 0;
+    private float _score3 = 0;
+    private float _score4 = 0;
 
     protected override async Task OnInitializedAsync()
     {

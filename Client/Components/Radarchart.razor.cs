@@ -9,10 +9,10 @@ public partial class Radarchart : ComponentBase
     private BlazorCanvas Canvas { get; set; }
     [Parameter] public float Width { get; set; } = 325;
     [Parameter] public float Height { get; set; } = 325;
-    [Parameter] public int ScoreCategory1 { get; set; }
-    [Parameter] public int ScoreCategory2 { get; set; }
-    [Parameter] public int ScoreCategory3 { get; set; }
-    [Parameter] public int ScoreCategory4 { get; set; }
+    [Parameter] public float ScoreCategory1 { get; set; }
+    [Parameter] public float ScoreCategory2 { get; set; }
+    [Parameter] public float ScoreCategory3 { get; set; }
+    [Parameter] public float ScoreCategory4 { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
