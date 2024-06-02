@@ -13,7 +13,8 @@ public partial class Questions
     [Inject] private HttpClient ReflectionnaireService { get; set; }
     [Inject] IJSRuntime JSRuntime { get; set; }
     [Inject] DialogService DialogService { get; set; }
-    [Parameter] public int? GameId { get; set; }
+    [Inject] ILogger<Questions> Logger { get; set; }
+    [Parameter] public Guid? ReflectionnaireId { get; set; }
     
     private List<Answer> _answers = [];
     private CategoryTotal[]? _scores;
@@ -28,8 +29,7 @@ public partial class Questions
     {
         try
         {
-            string reflectionnaireId = Uri.EscapeDataString("121331d6-8c01-4dfc-b5fe-1776b1184baa");
-            string url = $"/api/Reflectionnaires?reflectionnaireId={reflectionnaireId}";
+            string url = $"/api/Reflectionnaires?reflectionnaireId={ReflectionnaireId}";
 
             _reflectionnaire = await ReflectionnaireService.GetFromJsonAsync<ReflectionnaireData>(url);
             if (_reflectionnaire == null)
@@ -46,7 +46,7 @@ public partial class Questions
         }
         catch (Exception ex)
         {
-            Console.WriteLine(ex.ToString());
+            Logger.LogError(ex, "Failed to get Reflectionnaire from API");
         }
     }
 
