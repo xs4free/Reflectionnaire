@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.JSInterop;
+using Radzen;
 using Reflectionnaire.Client.Modal;
 using Reflectionnaire.Shared;
 
@@ -11,6 +12,7 @@ public partial class Questions
 {
     [Inject] private HttpClient ReflectionnaireService { get; set; }
     [Inject] IJSRuntime JSRuntime { get; set; }
+    [Inject] DialogService DialogService { get; set; }
     [Parameter] public int? GameId { get; set; }
     
     private List<Answer> _answers = [];
@@ -69,6 +71,12 @@ public partial class Questions
 
     private async Task OnSentClicked(MouseEventArgs obj)
     {
+        if (!_answers.All(answer => answer.Score > 0))
+        {
+            await DialogService.Alert("Nog niet alle vragen zijn beantwoord, scroll terug en zorg dat alle vragen minimaal 1 ster hebben", "Niet alles beantwoord", new AlertOptions() { OkButtonText = "Oke" });
+            return;
+        }
+
         await SentAnswersAsync();
         UpdateRadarChart();
     }
