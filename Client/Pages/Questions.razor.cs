@@ -73,6 +73,16 @@ public partial class Questions
         UpdateRadarChart();
     }
 
+    private async Task OnStartClicked(MouseEventArgs args)
+    {
+        if (_answers.Count == 0)
+        {
+            return;
+        }
+
+        await JSRuntime.InvokeVoidAsync("Reflectionnaire.scrollToAnswer", _answers[0].Question?.Id);
+    }
+
     private async Task SentAnswersAsync()
     {
         string reflectionnaireId = Uri.EscapeDataString("121331d6-8c01-4dfc-b5fe-1776b1184baa");
