@@ -60,13 +60,13 @@ public partial class Questions
         var index = _answers.IndexOf(answer);
         if (index + 1 > _answers.Count - 1)
         {
-            JSRuntime.InvokeVoidAsync("Reflectionnaire.scrollToAnswer", "sentBlock");
+            JSRuntime.InvokeVoidAsync("Reflectionnaire.scrollToAnswer", "sentBlock").ConfigureAwait(false);
             return;
         }
         
         var nextAnswer = _answers[index+1];
 
-        JSRuntime.InvokeVoidAsync("Reflectionnaire.scrollToAnswer", nextAnswer.Question?.Id);
+        JSRuntime.InvokeVoidAsync("Reflectionnaire.scrollToAnswer", nextAnswer.Question?.Id).ConfigureAwait(false);
     }
 
     private async Task OnSentClicked(MouseEventArgs obj)
