@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Http;
 using Microsoft.Azure.Functions.Worker;
 using Reflectionnaire.Api.DataAccess;
 using Reflectionnaire.Api.DataAccess.Entities;
@@ -6,6 +5,7 @@ using Reflectionnaire.Api.Mappers;
 using Reflectionnaire.Shared;
 using Microsoft.Azure.Functions.Worker.Http;
 using System.Net;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Reflectionnaire.Api
 {
@@ -31,5 +31,48 @@ namespace Reflectionnaire.Api
 
             return request.CreateResponse(HttpStatusCode.OK);
         }
+
+        [Function("AllUsersAnswers")]
+        public async Task<ReflectionnaireAllUserAnswers?> AllUsersAnswers(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get")] HttpRequestData request,
+            [FromQuery] Guid reflectionnaireId)
+        {
+            var reflectionnaireClient = await _factory.CreateAsync(TableNames.Reflectionnaires);
+            string reflectionnaireIdText = reflectionnaireId.ToString("D");
+            var reflectionnaire = reflectionnaireClient.Query<ReflectionnaireEntity>(
+                e => e.PartitionKey == reflectionnaireIdText && e.RowKey == reflectionnaireIdText).FirstOrDefault();
+
+            if (reflectionnaire == null)
+            {
+                return null;
+            }
+
+            var questionsClient = await _factory.CreateAsync(TableNames.Questions);
+            var questionToCategoryLookup = questionsClient
+                .Query<QuestionEntity>(answer => answer.PartitionKey == reflectionnaire.ReflectionnaireTypeId)
+                .ToDictionary(entity => Convert.ToInt32(entity.RowKey), entity => entity.Category);
+
+            var answersClient = await _factory.CreateAsync(TableNames.Answers);
+            var entities = answersClient.Query<AnswersEntity>(answer => answer.PartitionKey == reflectionnaireIdText);
+
+            var numberOfUsers = entities.GroupBy(entity => entity.RowKey).Count();
+
+            var categoryTotals = entities
+                .SelectMany(AnswersMapper.AnswerEntityToQuestionAnswer)
+                .Select(entity => new { Category = questionToCategoryLookup[entity.QuestionId], entity.Score })
+                .GroupBy(entity => entity.Category)
+                .Select(group => new CategoryTotal { TotalScore = group.Sum(g => g.Score) / (float)numberOfUsers, Category = (Category)group.Key })
+                .ToArray();
+
+            return new ReflectionnaireAllUserAnswers
+            {
+                ReflectionnaireId = reflectionnaireIdText,
+                Name = reflectionnaire.Name,
+                Description = reflectionnaire.Description,
+                NumberOfRespondents = numberOfUsers,
+                CategoryTotals = categoryTotals
+            };
+        }
+
     }
 }

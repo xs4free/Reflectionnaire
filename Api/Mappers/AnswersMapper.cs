@@ -16,5 +16,16 @@ namespace Reflectionnaire.Api.Mappers
 
         private static string QuestionAnswerToString(IEnumerable<QuestionAnswer> questionAnswers) =>
             JsonSerializer.Serialize(questionAnswers);
+
+
+        public static IEnumerable<QuestionAnswer> AnswerEntityToQuestionAnswer(AnswersEntity entity)
+        {
+            if (entity == null)
+            {
+                return Enumerable.Empty<QuestionAnswer>();
+            }
+
+            return JsonSerializer.Deserialize<IEnumerable<QuestionAnswer>>(entity.Answers) ?? Enumerable.Empty<QuestionAnswer>();
+        }
     }
 }
