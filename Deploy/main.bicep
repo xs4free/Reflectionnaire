@@ -17,6 +17,7 @@ resource webApplication_appsettings 'Microsoft.Web/staticSites/config@2021-01-15
   name: 'appsettings'
   properties: {
     APPLICATIONINSIGHTS_CONNECTION_STRING: applicationInsights.properties.ConnectionString
+    ReflectionnaireOptions__TableStorageConnectionString: 'DefaultEndpointsProtocol=https;AccountName=${storageaccount.name};AccountKey=${listKeys(storageaccount.id, storageaccount.apiVersion).keys[0].value};EndpointSuffix=${environment().suffixes.storage}'
   }
 }
 
