@@ -95,12 +95,16 @@ public partial class Questions
 
     private async Task SentAnswersAsync()
     {
-        string reflectionnaireId = Uri.EscapeDataString("121331d6-8c01-4dfc-b5fe-1776b1184baa");
+        if (ReflectionnaireId == null)
+        {
+            return;
+        }
+
         string url = $"/api/Answers";
 
         var answers = new ReflectionnaireAnswers
         {
-            ReflectionnaireId = reflectionnaireId,
+            ReflectionnaireId = ReflectionnaireId.Value.ToString("D"),
             UserId = Guid.NewGuid(),
             QuestionAnswers = _answers.Select(answer => new QuestionAnswer { QuestionId = answer.Question.Id, Score = answer.Score }).ToList(),
         };
