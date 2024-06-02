@@ -57,23 +57,25 @@ public partial class Questions
             return;
         }
 
-        var index = _answers.IndexOf(answer);
-        if (index + 1 > _answers.Count - 1)
+        // scroll to first unanswered question
+        var unansweredQuestion = _answers.FirstOrDefault(answer => answer.Score == 0);
+        if (unansweredQuestion != null)
         {
-            JSRuntime.InvokeVoidAsync("Reflectionnaire.scrollToAnswer", "sentBlock").ConfigureAwait(false);
+            JSRuntime.InvokeVoidAsync("Reflectionnaire.scrollToAnswer", unansweredQuestion.Question?.Id).ConfigureAwait(false);
             return;
         }
-        
-        var nextAnswer = _answers[index+1];
 
-        JSRuntime.InvokeVoidAsync("Reflectionnaire.scrollToAnswer", nextAnswer.Question?.Id).ConfigureAwait(false);
+        // scroll to sentBlock
+        JSRuntime.InvokeVoidAsync("Reflectionnaire.scrollToAnswer", "sentBlock").ConfigureAwait(false);
     }
 
     private async Task OnSentClicked(MouseEventArgs obj)
     {
-        if (!_answers.All(answer => answer.Score > 0))
+        var unansweredQuestion = _answers.FirstOrDefault(answer => answer.Score == 0);
+        if (unansweredQuestion != null)
         {
-            await DialogService.Alert("Nog niet alle vragen zijn beantwoord, scroll terug en zorg dat alle vragen minimaal 1 ster hebben", "Niet alles beantwoord", new AlertOptions() { OkButtonText = "Oke" });
+            await DialogService.Alert("Nog niet alle vragen zijn beantwoord, we scrollen terug naar de eerste onbeantwoorde vraag. Zorg dat alle vragen minimaal 1 ster hebben.", "Niet alles beantwoord", new AlertOptions() { OkButtonText = "Oke" });
+            await JSRuntime.InvokeVoidAsync("Reflectionnaire.scrollToAnswer", unansweredQuestion.Question?.Id).ConfigureAwait(false);
             return;
         }
 
