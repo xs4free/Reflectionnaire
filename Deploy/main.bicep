@@ -21,6 +21,12 @@ resource webApplication_appsettings 'Microsoft.Web/staticSites/config@2021-01-15
   }
 }
 
+resource customDomain 'Microsoft.Web/staticSites/customDomains@2021-02-01' = {
+  parent: webApplication
+  name: 'www.reflectionnaire.com'
+  properties: {}
+}
+
 resource storageaccount 'Microsoft.Storage/storageAccounts@2021-02-01' = {
   name: 'stdatareflectionnaire'
   location: location
