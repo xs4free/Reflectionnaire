@@ -14,6 +14,9 @@ public partial class Radarchart : ComponentBase
     [Parameter] public float ScoreCategory3 { get; set; }
     [Parameter] public float ScoreCategory4 { get; set; }
 
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IDictionary<string, object>? AdditionalAttributes { get; set; }
+
     protected override async Task OnInitializedAsync()
     {
         await DrawRadarChartAsync();
