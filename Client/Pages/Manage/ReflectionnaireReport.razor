@@ -10,19 +10,39 @@
 }
 else
 {
-    <RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.Center" Gap="100px">
-        <RadzenCard class="rz-background-color-secondary-lighter">
-            <h3>@_reflectionnaire?.Name</h3>
-            <hr style="border: none; background-color: var(--rz-text-disabled-color); height: 1px; margin: 1rem 0;" />
-            <RadzenText TextStyle="TextStyle.Body1">@_reflectionnaire?.Description</RadzenText>
-        </RadzenCard>
-    </RadzenStack>
+    <RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.Center" Gap="1000px">
 
-    <RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.Center">
+        <RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.Center" Gap="50px">
+            <RadzenCard class="rz-background-color-secondary-lighter">
+                <h3>@_reflectionnaire?.Name</h3>
+                <hr style="border: none; background-color: var(--rz-text-disabled-color); height: 1px; margin: 1rem 0;" />
+                <RadzenText TextStyle="TextStyle.Body1">@_reflectionnaire?.Description</RadzenText>
+            </RadzenCard>
+
+            <RadzenCard class="rz-background-color-secondary-lighter">
+                <RadzenStack Orientation="Orientation.Vertical" Gap="1rem" AlignItems="AlignItems.Center">
+                    <img alt="QR-code for current Reflectionnaire" src="@_qrBytes" width="300" />
+                    <a href="@_urlReflectionnaire">@_urlReflectionnaire</a>
+                </RadzenStack>
+            </RadzenCard>
+
+            <RadzenButton Click=ShowAnswers_Clicked Text="Show answers" Icon="leaderboard" ButtonStyle="ButtonStyle.Primary" Size="ButtonSize.Large" />
+        </RadzenStack>
+
+        <RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.Center" Gap="0em">
+            <RadzenCard class="p-1 rz-background-color-secondary-lighter rz-text-align-center rz-m-12">
+                <RadzenText TextStyle="TextStyle.Body1">De score van @(_reflectionnaire?.NumberOfRespondents ?? 0) @(_reflectionnaire?.NumberOfRespondents > 1 ? "deelnemers" : "deelnemer")</RadzenText>
+            </RadzenCard>
+            
+            <Radarchart ScoreCategory1="_score1" ScoreCategory2="_score2" ScoreCategory3="_score3" ScoreCategory4="_score4" Width="500" Height="500" id="radarChart" />
+
+            <RadzenButton Click=Refresh_Clicked Text="Refresh" Icon="refresh" ButtonStyle="ButtonStyle.Primary" Size="ButtonSize.Large" Style="margin-top:3em" />
+        </RadzenStack>
+
+        <!-- dummy block to make the radar chart center correctly on the page -->
         <RadzenCard class="p-1 rz-background-color-secondary-lighter rz-text-align-center rz-m-12">
-            <RadzenText TextStyle="TextStyle.Body1">De score van @(_reflectionnaire?.NumberOfRespondents ?? 0) @(_reflectionnaire?.NumberOfRespondents > 1 ? "deelnemers" : "deelnemer")</RadzenText>
+            <RadzenText TextStyle="TextStyle.Body1"></RadzenText>
         </RadzenCard>
 
-        <Radarchart ScoreCategory1="_score1" ScoreCategory2="_score2" ScoreCategory3="_score3" ScoreCategory4="_score4" />
     </RadzenStack>
 }
