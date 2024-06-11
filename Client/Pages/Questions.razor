@@ -15,9 +15,11 @@
     </RadzenStack>
 }
 
-@if (_answers == null)
+@if (_answers == null || _answers.Count == 0)
 {
-    <p><em>Loading...</em></p>
+    <RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.Center">
+        <p><em>Loading...</em></p>
+    </RadzenStack>
 }
 else if (_scores == null)
 {
