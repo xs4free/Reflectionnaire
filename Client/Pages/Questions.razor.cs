@@ -20,6 +20,11 @@ public partial class Questions
     private CategoryTotal[]? _scores;
     private ReflectionnaireData? _reflectionnaire;
 
+    private double _questionsAnswered = 0;
+    private double _questionsTotal = 0;
+    private string _unit => $" van de {_questionsTotal} vragen zijn beantwoord";
+
+
     private float _score1 = 0;
     private float _score2 = 0;
     private float _score3 = 0;
@@ -43,11 +48,18 @@ public partial class Questions
             {
                 answer.PropertyChanged += Answer_PropertyChanged;
             }
+            UpdateProgressBar();
         }
         catch (Exception ex)
         {
             Logger.LogError(ex, "Failed to get Reflectionnaire from API");
         }
+    }
+
+    private void UpdateProgressBar()
+    {
+        _questionsTotal = _answers.Count;
+        _questionsAnswered = _answers.Count(answer => answer.Score != 0);
     }
 
     private void Answer_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -56,6 +68,8 @@ public partial class Questions
         {
             return;
         }
+
+        UpdateProgressBar();
 
         // scroll to first unanswered question
         var unansweredQuestion = _answers.FirstOrDefault(answer => answer.Score == 0);

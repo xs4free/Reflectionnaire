@@ -36,11 +36,16 @@ else if (_scores == null)
 
         @foreach (var answer in _answers)
         {
-            <RadzenCard class="p-1 rz-background-color-primary-light rz-text-align-center rz-m-12">
-                <RadzenText TextStyle="TextStyle.H4" class="rz-color-on-primary-light">@answer.Question?.Description</RadzenText>
-                <a id=@answer.Question?.Id />
-                <Rating @bind-Value=@answer.Score Stars="5" Style="TextStyle.H4" />
-            </RadzenCard>
+            <RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.Center" Gap="0px">
+                <RadzenCard class="p-1 rz-background-color-primary-light rz-text-align-center rz-m-12">
+                    <RadzenText TextStyle="TextStyle.H4" class="rz-color-on-primary-light">@answer.Question?.Description</RadzenText>
+                    <a id=@answer.Question?.Id />
+                    <Rating @bind-Value=@answer.Score Stars="5" Style="TextStyle.H4" />
+                </RadzenCard>
+                <RadzenCard class="p-1 rz-background-color-primary-lighter rz-text-align-center rz-m-12">
+                    <RadzenProgressBar ProgressBarStyle="ProgressBarStyle.Primary" @bind-Value="@_questionsAnswered" Max=@_questionsTotal Unit=@_unit class="rz-mx-12 rz-my-4" />
+                </RadzenCard>
+            </RadzenStack>
         }
 
         <RadzenCard Variant="Variant.Text">
