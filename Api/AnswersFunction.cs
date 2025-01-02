@@ -4,7 +4,6 @@ using Reflectionnaire.Api.DataAccess.Entities;
 using Reflectionnaire.Api.Mappers;
 using Reflectionnaire.Shared;
 using Microsoft.Azure.Functions.Worker.Http;
-using System.Net;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Reflectionnaire.Api
@@ -12,7 +11,7 @@ namespace Reflectionnaire.Api
     public class AnswersFunction(ITableClientFactory _factory)
     {
         [Function("UserAnswers")]
-        public async Task<HttpResponseData> Run(
+        public async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post")] HttpRequestData request, 
             [Microsoft.Azure.Functions.Worker.Http.FromBody] ReflectionnaireUserAnswers answers)
         {
@@ -22,18 +21,18 @@ namespace Reflectionnaire.Api
 
             if (reflectionnaire == null)
             {
-                return request.CreateResponse(HttpStatusCode.NotFound);
+                return new NotFoundObjectResult(null);
             }
 
             var questionsClient = await _factory.CreateAsync(TableNames.Answers);
             var entity = AnswersMapper.ReflectionnaireUserAnswersToAnswersEntity(answers);
             await questionsClient.AddEntityAsync(entity);
 
-            return request.CreateResponse(HttpStatusCode.OK);
+            return new OkObjectResult(entity);
         }
 
         [Function("AllUsersAnswers")]
-        public async Task<ReflectionnaireAllUserAnswers?> AllUsersAnswers(
+        public async Task<IActionResult> AllUsersAnswers(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get")] HttpRequestData request,
             [FromQuery] Guid reflectionnaireId)
         {
@@ -44,7 +43,7 @@ namespace Reflectionnaire.Api
 
             if (reflectionnaire == null)
             {
-                return null;
+                return new NotFoundObjectResult(null);
             }
 
             var questionsClient = await _factory.CreateAsync(TableNames.Questions);
@@ -64,15 +63,14 @@ namespace Reflectionnaire.Api
                 .Select(group => new CategoryTotal { TotalScore = group.Sum(g => g.Score) / (float)numberOfUsers, Category = (Category)group.Key })
                 .ToArray();
 
-            return new ReflectionnaireAllUserAnswers
+            return new OkObjectResult(new ReflectionnaireAllUserAnswers
             {
                 ReflectionnaireId = reflectionnaireIdText,
                 Name = reflectionnaire.Name,
                 Description = reflectionnaire.Description,
                 NumberOfRespondents = numberOfUsers,
                 CategoryTotals = categoryTotals
-            };
+            });
         }
-
     }
 }

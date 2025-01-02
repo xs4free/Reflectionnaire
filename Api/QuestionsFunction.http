@@ -1,7 +1,8 @@
 GET http://localhost:7071/api/Questions?reflectionnaireId=121331d6-8c01-4dfc-b5fe-1776b1184baa
-
 ###
-POST http://localhost:7071/api/Answers
+GET http://localhost:7071/api/Reflectionnaires?reflectionnaireId=121331d6-8c01-4dfc-b5fe-1776b1184baa
+###
+POST http://localhost:7071/api/UserAnswers
 Content-Type: application/json
 
 {
