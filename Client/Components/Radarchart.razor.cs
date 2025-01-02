@@ -6,7 +6,7 @@ namespace Reflectionnaire.Client.Components;
 public partial class Radarchart : ComponentBase
 {
     private bool _imageLoaded;
-    private BlazorCanvas Canvas { get; set; }
+    private BlazorCanvas Canvas { get; set; } = default!;
     [Parameter] public float Width { get; set; } = 325;
     [Parameter] public float Height { get; set; } = 325;
     [Parameter] public float ScoreCategory1 { get; set; }

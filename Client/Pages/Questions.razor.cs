@@ -10,10 +10,10 @@ namespace Reflectionnaire.Client.Pages;
 
 public partial class Questions
 {
-    [Inject] private HttpClient ReflectionnaireService { get; set; }
-    [Inject] IJSRuntime JSRuntime { get; set; }
-    [Inject] DialogService DialogService { get; set; }
-    [Inject] ILogger<Questions> Logger { get; set; }
+    [Inject] private HttpClient ReflectionnaireService { get; set; } = default!;
+    [Inject] IJSRuntime JSRuntime { get; set; } = default!;
+    [Inject] DialogService DialogService { get; set; } = default!;
+    [Inject] ILogger<Questions> Logger { get; set; } = default!;
     [Parameter] public Guid? ReflectionnaireId { get; set; }
     
     private List<Answer> _answers = [];
@@ -120,7 +120,7 @@ public partial class Questions
         {
             ReflectionnaireId = ReflectionnaireId.Value.ToString("D"),
             UserId = Guid.NewGuid(),
-            QuestionAnswers = _answers.Select(answer => new QuestionAnswer { QuestionId = answer.Question.Id, Score = answer.Score }).ToList(),
+            QuestionAnswers = _answers.Select(answer => new QuestionAnswer { QuestionId = answer.Question?.Id ?? -1, Score = answer.Score }).ToList(),
         };
 
         await ReflectionnaireService.PostAsJsonAsync(url, answers);
@@ -130,8 +130,8 @@ public partial class Questions
     {
         _scores = _answers
             .Where(answer => answer.Question != null)
-            .GroupBy(answer => answer.Question?.Category)
-            .Select(group => new CategoryTotal { TotalScore = group.Sum(g => g.Score), Category = group.Key.Value })
+            .GroupBy(answer => answer.Question.Category)
+            .Select(group => new CategoryTotal { TotalScore = group.Sum(g => g.Score), Category = group.Key })
             .ToArray();
 
         _score1 = _scores.First(s => s.Category == Category.Execution).TotalScore;

@@ -5,7 +5,7 @@ namespace Reflectionnaire.Client.Modal
 {
     public class Answer : INotifyPropertyChanged
     {
-        public Question? Question { get; set; }
+        public Question Question { get; set; } = default!;
 
         private int score;
 
