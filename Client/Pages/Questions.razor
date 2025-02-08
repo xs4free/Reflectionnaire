@@ -42,8 +42,10 @@ else if (_scores == null)
                     <a id=@answer.Question?.Id />
                     <Rating @bind-Value=@answer.Score Stars="5" Style="TextStyle.H4" />
                 </RadzenCard>
-                <RadzenCard class="p-1 rz-background-color-primary-lighter rz-text-align-center rz-m-12">
-                    <RadzenProgressBar ProgressBarStyle="ProgressBarStyle.Primary" @bind-Value="@_questionsAnswered" Max=@_questionsTotal Unit=@_unit class="rz-mx-12 rz-my-4" />
+                <RadzenCard class="p-1 rz-background-color-primary-lighter rz-text-align-center rz-w-max-content rz-m-12">
+                    <RadzenText TextStyle="TextStyle.H6" class="rz-color-on-primary-light">
+                        Nog @(_questionsTotal-_questionsAnswered) vragen te gaan..
+                     </RadzenText>
                 </RadzenCard>
             </RadzenStack>
         }

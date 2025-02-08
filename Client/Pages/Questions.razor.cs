@@ -22,8 +22,6 @@ public partial class Questions
 
     private double _questionsAnswered = 0;
     private double _questionsTotal = 0;
-    private string _unit => $" van de {_questionsTotal} vragen zijn beantwoord";
-
 
     private float _score1 = 0;
     private float _score2 = 0;
