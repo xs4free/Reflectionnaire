@@ -20,6 +20,9 @@ public partial class Questions
     private CategoryTotal[]? _scores;
     private ReflectionnaireData? _reflectionnaire;
 
+    private bool _loading = false;
+    private bool _notFound = false;
+
     private double _questionsAnswered = 0;
     private double _questionsTotal = 0;
 
@@ -32,6 +35,9 @@ public partial class Questions
     {
         try
         {
+            _notFound = false;
+            _loading = true;
+
             string url = $"/api/Reflectionnaires?reflectionnaireId={ReflectionnaireId}";
 
             _reflectionnaire = await ReflectionnaireService.GetFromJsonAsync<ReflectionnaireData>(url);
@@ -48,9 +54,21 @@ public partial class Questions
             }
             UpdateProgressBar();
         }
+        catch (HttpRequestException exHttp)
+        {
+            Logger.LogError(exHttp, "Failed HTTP request to get Reflectionnaire from API");
+            if (exHttp.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                _notFound = true;
+            }
+        }
         catch (Exception ex)
         {
             Logger.LogError(ex, "Failed to get Reflectionnaire from API");
+        }
+        finally
+        {
+            _loading = false;
         }
     }
 

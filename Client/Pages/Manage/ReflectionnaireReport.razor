@@ -4,9 +4,13 @@
 
 <PageTitle>Reflectionnaire</PageTitle>
 
-@if (_reflectionnaire == null)
+@if (_loading)
 {
     <p><em>Loading...</em></p>
+}
+else if (_notFound || _reflectionnaire == null)
+{
+    <p><em>Reflectionnaire not found.</em></p>
 }
 else
 {

@@ -19,7 +19,7 @@ namespace Reflectionnaire.Api
             var reflectionnaire = reflectionnaireClient.Query<ReflectionnaireEntity>(
                 e => e.PartitionKey == answers.ReflectionnaireId && e.RowKey == answers.ReflectionnaireId).FirstOrDefault();
 
-            if (reflectionnaire == null)
+            if (reflectionnaire == null || reflectionnaire.EndDate <= DateTime.Now)
             {
                 return new NotFoundObjectResult(null);
             }

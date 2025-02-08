@@ -15,10 +15,16 @@
     </RadzenStack>
 }
 
-@if (_answers == null || _answers.Count == 0)
+@if (_loading)
 {
     <RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.Center">
         <p><em>Loading...</em></p>
+    </RadzenStack>
+}
+else if (_notFound || _answers == null || _answers.Count == 0)
+{
+    <RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.Center">
+        <p><em>Reflectionnaire not found (or no longer available).</em></p>
     </RadzenStack>
 }
 else if (_scores == null)

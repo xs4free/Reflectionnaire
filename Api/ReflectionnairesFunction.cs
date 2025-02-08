@@ -14,7 +14,7 @@ namespace Reflectionnaire.Api
         {
             var reflectionnaireClient = await _factory.CreateAsync(TableNames.Reflectionnaires);
             var reflectionnaire = reflectionnaireClient.Query<ReflectionnaireEntity>(e => e.PartitionKey == reflectionnaireId && e.RowKey == reflectionnaireId).FirstOrDefault();
-            if (reflectionnaire == null)
+            if (reflectionnaire == null || reflectionnaire.EndDate <= DateTime.Now)
             {
                 return new NotFoundObjectResult(null);
             }

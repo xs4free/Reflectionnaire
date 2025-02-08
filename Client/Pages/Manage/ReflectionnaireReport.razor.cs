@@ -16,6 +16,9 @@ public partial class ReflectionnaireReport
 
     private ReflectionnaireAllUserAnswers? _reflectionnaire;
 
+    private bool _loading = false;
+    private bool _notFound = false;
+
     private float _score1 = 0;
     private float _score2 = 0;
     private float _score3 = 0;
@@ -36,6 +39,9 @@ public partial class ReflectionnaireReport
     {
         try
         {
+            _notFound = false;
+            _loading = true;
+
             string url = $"/api/AllUsersAnswers?reflectionnaireId={ReflectionnaireId}";
 
             _reflectionnaire = await ReflectionnaireService.GetFromJsonAsync<ReflectionnaireAllUserAnswers>(url);
@@ -49,9 +55,21 @@ public partial class ReflectionnaireReport
             _score3 = _reflectionnaire.CategoryTotals.FirstOrDefault(s => s.Category == Category.People)?.TotalScore ?? 0;
             _score4 = _reflectionnaire.CategoryTotals.FirstOrDefault(s => s.Category == Category.Place)?.TotalScore ?? 0;
         }
+        catch (HttpRequestException exHttp)
+        {
+            Logger.LogError(exHttp, "HttpRequest error getting all users answers");
+            if (exHttp.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                _notFound = true;
+            }
+        }
         catch (Exception ex)
         {
             Logger.LogError(ex, "Error getting all users answers");
+        }
+        finally
+        {
+            _loading = false;
         }
     }
 
@@ -60,11 +78,9 @@ public partial class ReflectionnaireReport
         await UpdateRadarChart();
     }
 
-    private Task ShowAnswers_Clicked()
+    private async Task ShowAnswers_Clicked()
     {
-        JSRuntime.InvokeVoidAsync("Reflectionnaire.scrollToAnswer", "radarChart").ConfigureAwait(false);
-        
-        return Task.CompletedTask;
+        await JSRuntime.InvokeVoidAsync("Reflectionnaire.scrollToAnswer", "radarChart").ConfigureAwait(false);
     }
 
     private void GenerateQRCode(string url)
